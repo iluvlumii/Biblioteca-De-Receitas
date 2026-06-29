@@ -1,0 +1,19 @@
+-- Criando uma tabela de exemplo que segue todas as diretrizes solicitadas
+CREATE TABLE registro_performance (
+    -- [IDENTIFICAÇÃO]
+    codigo INT NOT NULL,
+    nome VARCHAR(150) NOT NULL,
+    descricao TEXT,
+    
+    -- [PERFORMANCE]
+    quantidade INT NOT NULL,
+    valor DECIMAL(12, 2) NOT NULL, -- Suporta valores monetários com duas casas decimais
+    indicador VARCHAR(50),
+    
+    -- [TEMPORALIDADE]
+    data DATE NOT NULL,
+    horario TIME NOT NULL,
+    
+    -- Definição da Chave Primária (Apenas chave primária configurada)
+    CONSTRAINT PK_registro_performance PRIMARY KEY (codigo)
+);
