@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Biblioteca de Receitas</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; display: flex; height: 100vh; overflow: hidden; background: #f4f4f4; }
+
+    /* SIDEBAR */
+    aside {
+      width: 130px;
+      background: #e8e8e8;
+      border-right: 2px solid #ccc;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 0;
+      flex-shrink: 0;
+    }
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px 12px;
+      border-bottom: 1px solid #ccc;
+      font-size: 11px;
+      font-weight: bold;
+      color: #333;
+    }
+    .user-icon {
+      width: 28px; height: 28px;
+      background: #aaa;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .nav-section { padding: 10px 0; border-bottom: 1px solid #ccc; }
+    .nav-section a {
+      display: block;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #222;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .nav-section a:hover { background: #d0d0d0; }
+    .nav-section a.active { color: #1a6fc4; }
+    .nav-section a.premium { color: #b8860b; }
+
+    /* MAIN */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 1.6rem;
+      text-align: center;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+    }
+
+    /* BUSCA */
+    .search {
+      display: flex;
+      border: 2px solid #aaa;
+      border-radius: 4px;
+      overflow: hidden;
+      max-width: 600px;
+      margin: 0 auto 24px;
+      background: #fff;
+    }
+    .search input {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+    }
+    .search button {
+      padding: 8px 14px;
+      background: #ddd;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .search button:hover { background: #bbb; }
+
+    /* CARDS */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: box-shadow .15s;
+    }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+    .card img, .card .img-ph {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+    }
+    .card .img-ph {
+      background: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+    .card-body { padding: 10px; }
+    .card-body h3 {
+      font-size: 13px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .card-body p { font-size: 12px; color: #444; line-height: 1.4; }
+
+    @media (max-width: 640px) {
+      .cards { grid-template-columns: 1fr; }
+      aside { width: 90px; }
+    }
+  </style>
+</head>
+<body>
+
+  <aside>
+    <div class="user">
+      <div class="user-icon">👤</div>
+      <span>USUÁRIO</span>
+    </div>
+
+    <div class="nav-section">
+      <a href="index.html" class="active">PG.INICIAL</a>
+      <a href="foruns.html">FÓRUNS</a>
+      <a href="premium.html" class="premium">PREMIUM</a>
+    </div>
+
+    <div class="nav-section">
+      <a href="configs.html">CONFIGS</a>
+      <a href="estatisticas.html">ESTATÍSTICAS NUTRICIONAIS</a>
+      <a href="doacoes.html">DOAÇÕES</a>
+      <a href="feedback.html">FEEDBACK</a>
+    </div>
+  </aside>
+
+  <main>
+    <h1>BIBLIOTECA DE RECEITAS</h1>
+
+    <div class="search">
+      <input type="text" id="q" placeholder="Digite aqui uma receita para procurar" />
+      <button onclick="buscar()">🔍</button>
+    </div>
+
+    <div class="cards" id="cards"></div>
+  </main>
+
+  <script>
+    const receitas = [
+      { id:1, emoji:"🥤", titulo:"BEBIDAS CASEIRAS", desc:"Receita: misture água e umas coisas aí até ficar assim…" },
+      { id:2, emoji:"🍛", titulo:"BRASILEIRINHO",      desc:"Receita: Pegue arroz e feijão e cozinhe os dois juntos de uma vez dai sirva 😊" },
+      { id:3, emoji:"🎂", titulo:"BOLO DE CHOCOLATE",      desc:"Receita: Pegue uns pedaços de chocolate e canela e coloque em cima do bolo até ficar assim" },
+      { id:4, emoji:"🍝", titulo:"MACARRÃO",         desc:"Receita: Cozinhe o macarrão e acrescente o molho de sua preferência." },
+      { id:5, emoji:"🥗", titulo:"SALADA SIMPLES",   desc:"Receita: Misture folhas verdes, tomate e azeite. Pronto." },
+      { id:6, emoji:"🍳", titulo:"OMELETE",          desc:"Receita: Bata 2 ovos, despeje na frigideira quente com manteiga e dobre ao meio." },
+    ];
+
+    function renderCards(lista) {
+      document.getElementById('cards').innerHTML = lista.map(r => `
+        <a href="receita.html?id=${r.id}" class="card">
+          <div class="img-ph">${r.emoji}</div>
+          <div class="card-body">
+            <h3>${r.titulo}</h3>
+            <p>${r.desc}</p>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    function buscar() {
+      const q = document.getElementById('q').value.toLowerCase().trim();
+      const filtradas = q ? receitas.filter(r =>
+        r.titulo.toLowerCase().includes(q) || r.desc.toLowerCase().includes(q)
+      ) : receitas;
+      renderCards(filtradas);
+    }
+
+    document.getElementById('q').addEventListener('keydown', e => {
+      if (e.key === 'Enter') buscar();
+    });
+
+    renderCards(receitas);
+  </script>
+
+</body>
+</html>
