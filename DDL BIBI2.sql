@@ -1,0 +1,84 @@
+-- SCRIPT DDL ATUALIZADO COM BASE NO DICIONÁRIO REVISIONADO (REMAKE)
+
+-- 1. PESSOA
+CREATE TABLE PESSOA (
+    id_pessoa INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nome_pessoa VARCHAR(100) NOT NULL,
+    email_pessoa VARCHAR(100) NOT NULL UNIQUE,
+    senha_pessoa VARCHAR(255) NOT NULL,
+    datanasc_pessoa DATE NOT NULL,
+    crm_nutricionista VARCHAR(20) DEFAULT NULL
+);
+
+-- 2. MOTIVO_SAUDE
+CREATE TABLE MOTIVO_SAUDE (
+    id_motivo INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nome_motivo VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- 3. INGREDIENTE
+CREATE TABLE INGREDIENTE (
+    id_ingrediente INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nome_ingrediente VARCHAR(100) NOT NULL UNIQUE,
+    unidade_padrao VARCHAR(30) NOT NULL
+);
+
+-- 4. RECEITA
+CREATE TABLE RECEITA (
+    id_receita INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_autor INT NOT NULL,
+    titulo_receita VARCHAR(150) NOT NULL,
+    modo_preparo TEXT NOT NULL,
+    tempo_preparo INT NOT NULL CHECK (tempo_preparo > 0),
+    CONSTRAINT fk_receita_pessoa FOREIGN KEY (id_autor) REFERENCES PESSOA(id_pessoa) ON DELETE CASCADE
+);
+
+-- 5. NECESSIDADE (Associativa entre PESSOA e MOTIVO_SAUDE)
+-- Nota: Corrigido erro de digitação do documento ("id_pagamento" para "id_motivo")
+CREATE TABLE NECESSIDADE (
+    id_pessoa INT NOT NULL,
+    id_motivo INT NOT NULL,
+    PRIMARY KEY (id_pessoa, id_motivo),
+    CONSTRAINT fk_necessidade_pessoa FOREIGN KEY (id_pessoa) REFERENCES PESSOA(id_pessoa) ON DELETE CASCADE,
+    CONSTRAINT fk_necessidade_motivo FOREIGN KEY (id_motivo) REFERENCES MOTIVO_SAUDE(id_motivo) ON DELETE CASCADE
+);
+
+-- 6. ACOMPANHAMENTO_FISICO
+CREATE TABLE ACOMPANHAMENTO_FISICO (
+    id_acompanhamento INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_pessoa INT NOT NULL,
+    peso DECIMAL(5,2) NOT NULL CHECK (peso > 0),
+    altura DECIMAL(3,2) NOT NULL CHECK (altura > 0),
+    data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT fk_acompanhamento_pessoa FOREIGN KEY (id_pessoa) REFERENCES PESSOA(id_pessoa) ON DELETE CASCADE
+);
+
+-- 7. RECEITA_INGREDIENTE
+CREATE TABLE RECEITA_INGREDIENTE (
+    id_receita INT NOT NULL,
+    id_ingrediente INT NOT NULL,
+    quantidade_ingrediente DECIMAL(6,2) NOT NULL CHECK (quantidade_ingrediente > 0),
+    unidademedida_ingrediente VARCHAR(30) NOT NULL,
+    PRIMARY KEY (id_receita, id_ingrediente),
+    CONSTRAINT fk_rec_ing_receita FOREIGN KEY (id_receita) REFERENCES RECEITA(id_receita) ON DELETE CASCADE,
+    CONSTRAINT fk_rec_ing_ingrediente FOREIGN KEY (id_ingrediente) REFERENCES INGREDIENTE(id_ingrediente) ON DELETE RESTRICT
+);
+
+-- 8. MOTIVO_RECEITA
+CREATE TABLE MOTIVO_RECEITA (
+    id_receita INT NOT NULL,
+    id_motivo INT NOT NULL,
+    PRIMARY KEY (id_receita, id_motivo),
+    CONSTRAINT fk_mot_rec_receita FOREIGN KEY (id_receita) REFERENCES RECEITA(id_receita) ON DELETE CASCADE,
+    CONSTRAINT fk_mot_rec_motivo FOREIGN KEY (id_motivo) REFERENCES MOTIVO_SAUDE(id_motivo) ON DELETE CASCADE
+);
+
+-- 9. CARDAPIO
+CREATE TABLE CARDAPIO (
+    id_cardapio INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_pessoa INT NOT NULL,
+    id_receita INT NOT NULL,
+    data_refeicao DATE NOT NULL,
+    CONSTRAINT fk_cardapio_pessoa FOREIGN KEY (id_pessoa) REFERENCES PESSOA(id_pessoa) ON DELETE CASCADE,
+    CONSTRAINT fk_cardapio_receita FOREIGN KEY (id_receita) REFERENCES RECEITA(id_receita) ON DELETE CASCADE
+);
