@@ -1,45 +1,114 @@
-cat << 'EOF' > main.py
-from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
-from database import engine, Base, SessionLocal
-import models, schemas
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    try:
-        Base.metadata.create_all(bind=engine)
-        print("✅ Tabelas sincronizadas no Supabase!")
-    except Exception as e:
-        print(f"⚠️ Aviso no arranque: {e}")
-    yield
+import models
+import schemas
+from database import SessionLocal, engine
 
-app = FastAPI(title="API FastAPI Supabase", lifespan=lifespan)
+models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI(
+    title="API do Projeto Integrador",
+    version="1.0.0"
+)
+
 
 def get_db():
     db = SessionLocal()
+
     try:
         yield db
     finally:
         db.close()
 
+
 @app.get("/")
-def read_root():
-    return {"status": "ok", "mensagem": "API e Supabase ativos!"}
+def inicio():
+    return {"mensagem": "API funcionando"}
 
-@app.post("/items/", response_model=schemas.ItemResponse)
-def criar_item(item: schemas.ItemCreate, db: Session = Depends(get_db)):
-    db_item = models.Item(nome=item.nome, descricao=item.descricao)
-    db.add(db_item)
+
+@app.post(
+    "/categorias",
+    response_model=schemas.CategoriaResponse
+)
+def criar_categoria(
+    categoria: schemas.CategoriaCreate,
+    db: Session = Depends(get_db)
+):
+    nova_categoria = models.Categoria(
+        nome=categoria.nome
+    )
+
+    db.add(nova_categoria)
     db.commit()
-    db.refresh(db_item)
-    return db_item
+    db.refresh(nova_categoria)
 
-@app.get("/items/", response_model=list[schemas.ItemResponse])
-def listar_itens(db: Session = Depends(get_db)):
-    return db.query(models.Item).all()
+    return nova_categoria
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
-EOF
+
+@app.get(
+    "/categorias",
+    response_model=list[schemas.CategoriaResponse]
+)
+def listar_categorias(
+    db: Session = Depends(get_db)
+):
+    return db.query(models.Categoria).all()
+
+
+@app.post(
+    "/produtos",
+    response_model=schemas.ProdutoResponse
+)
+def criar_produto(
+    produto: schemas.ProdutoCreate,
+    db: Session = Depends(get_db)
+):
+    categoria = (
+        db.query(models.Categoria)
+        .filter(
+            models.Categoria.id_categoria
+            == produto.id_categoria
+        )
+        .first()
+    )
+
+    if categoria is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Categoria não encontrada"
+        )
+
+    novo_produto = models.Produto(
+        nome=produto.nome,
+        id_categoria=produto.id_categoria
+    )
+
+    db.add(novo_produto)
+    db.commit()
+    db.refresh(novo_produto)
+
+    return {
+        "id_produto": novo_produto.id_produto,
+        "nome": novo_produto.nome,
+        "categoria": categoria.nome
+    }
+
+
+@app.get(
+    "/produtos",
+    response_model=list[schemas.ProdutoResponse]
+)
+def listar_produtos(
+    db: Session = Depends(get_db)
+):
+    produtos = db.query(models.Produto).all()
+
+    return [
+        {
+            "id_produto": produto.id_produto,
+            "nome": produto.nome,
+            "categoria": produto.categoria.nome
+        }
+        for produto in produtos
+    ]

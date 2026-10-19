@@ -48,4 +48,3 @@ class Produto(Base):
         "Categoria",
         back_populates="produtos"
     )
-
