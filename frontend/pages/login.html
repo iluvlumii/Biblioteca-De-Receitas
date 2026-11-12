@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acesso | Biblioteca de Receitas</title>
+  <link rel="stylesheet" href="../static/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="../js/login.js" defer></script>
+</head>
+<body>
+
+  <header class="cabecalho">
+    <div class="container">
+      <a href="index.html" class="marca-link">
+        <img src="../assets/logo.jpg" alt="Logo Biblioteca de Receitas" class="logo-img">
+        <span class="marca">Biblioteca de Receitas</span>
+      </a>
+    </div>
+  </header>
+
+  <nav class="container menu" aria-label="Navegação principal">
+    <a href="index.html" class="menu-link">
+      <i class="fa-solid fa-house" aria-hidden="true"></i> Início
+    </a>
+    <a href="#acesso" class="menu-link ativo" aria-current="page">
+      <i class="fa-solid fa-user" aria-hidden="true"></i> Acessando sua conta
+    </a>
+  </nav>
+
+  <main class="container" id="acesso">
+    <div class="titulo-pagina">
+      <p class="legenda">ACESSO</p>
+      <h1>Acessando sua conta</h1>
+      <p>Entre ou crie sua conta para guardar suas receitas favoritas.</p>
+    </div>
+
+    <div class="acesso">
+
+      <section class="painel" aria-labelledby="titulo-formulario">
+        <div class="painel-titulo">
+          <h2 id="titulo-formulario">Fazer login</h2>
+        </div>
+        <form id="form-login" name="form-login" class="formulario">
+          <p class="texto-apoio">Já tem uma conta? Bem-vindo de volta!</p>
+          <p id="mensagem" class="mensagem" role="status" aria-live="polite" hidden></p>
+
+          <div class="campos campos-coluna">
+            <div class="campo">
+              <label for="email">Email</label>
+              <input type="email" id="email" autocomplete="email" placeholder="Digite seu email" required>
+            </div>
+            <div class="campo">
+              <label for="senha">Senha</label>
+              <input type="password" id="senha" maxlength="150" autocomplete="current-password" placeholder="Digite sua senha" required>
+            </div>
+          </div>
+
+          <div class="acoes">
+            <button id="botao-Entrar" class="botao botao-principal" type="submit">
+              <i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i> Entrar
+            </button>
+          </div>
+
+          <p class="divisor">ou</p>
+
+          <div class="acoes">
+            <button id="botao-Entrar-no-Google" class="botao botao-secundario" type="button">
+              <i class="fa-brands fa-google" aria-hidden="true"></i> Entrar com Google
+            </button>
+            <button id="botao-Entrar-no-Apple" class="botao botao-secundario" type="button">
+              <i class="fa-brands fa-apple" aria-hidden="true"></i> Entrar com Apple
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section class="painel" aria-labelledby="titulo-lista">
+        <div class="painel-titulo">
+          <h2 id="titulo-lista">Primeira vez por aqui?</h2>
+        </div>
+        <form id="form-cadastro-cliente" name="form-cadastro-cliente" class="formulario">
+          <p class="texto-apoio">Crie sua conta para guardar suas receitas favoritas.</p>
+          <p id="mensagem-cliente" class="mensagem" role="status" aria-live="polite" hidden></p>
+
+          <div class="campos campos-coluna">
+            <div class="campo">
+              <label for="nome-cadastro">Nome</label>
+              <input type="text" id="nome-cadastro" autocomplete="name" placeholder="Digite seu nome" required>
+            </div>
+            <div class="campo">
+              <label for="email-cadastro">Email</label>
+              <input type="email" id="email-cadastro" autocomplete="email" placeholder="Digite seu email" required>
+            </div>
+            <div class="campo">
+              <label for="datanasc-cadastro">Data de nascimento</label>
+              <input type="date" id="datanasc-cadastro" autocomplete="bday" required>
+            </div>
+            <div class="campo">
+              <label for="senha-cadastro">Senha</label>
+              <input type="password" id="senha-cadastro" maxlength="150" autocomplete="new-password" placeholder="Crie uma senha" required>
+            </div>
+          </div>
+
+          <div class="acoes">
+            <button id="botao-cadastrar" class="botao botao-principal" type="submit">
+              <i class="fa-solid fa-user-plus" aria-hidden="true"></i> Cadastrar
+            </button>
+          </div>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="rodape">Biblioteca de Receitas</footer>
+
+</body>
+</html>
